@@ -1,0 +1,47 @@
+# Versi Docker Compose yang digunakan adalah 3.7
+version: "3.7"
+
+# Berisi konfigurasi 2 service, yakni service untuk ontainer item-app
+# dan service untuk container item-db
+services:
+
+  # Konfigurasi service item-app
+  item-app:
+
+    # Menggunakan image item-app yang diunduh dari Docker Hub
+    # image: imfariz/item-app:v1
+
+    # Menggunakan image item-app yang diunduh dari GitHub Packages
+    image: ghcr.io/imfariz/item-app:v1
+
+    # Melakukan port mapping yang dapat diakses dari port 80 di host
+    ports:
+      - 80:8080
+
+    # Service ini (item-app) hanya berjalan apabila 
+    # service item-db telah diluncurkan
+    depends_on:
+      - item-db
+
+    # Restart policy agar container selalu dijalankan
+    # ulang ketika berhenti
+    restart: always
+
+  # Konfigurasi service item-db
+  item-db:
+
+    # Menggunakan image mongo dengan tag 3 yang diambil dari Docker Hub
+    image: mongo:3
+
+    # Menggunakan volume bernama app-db yang diarahkan
+    # ke /data/db di container
+    volumes:
+      - app-db:/data/db
+
+    # Restart policy agar container selalu dijalankan
+    # ulang ketika berhenti
+    restart: always
+
+# Menggunakan volume bernama app-db
+volumes:
+  app-db:
